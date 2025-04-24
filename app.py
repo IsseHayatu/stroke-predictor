@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
 import pickle
 import numpy as np
-import os
 
 app = Flask(__name__)
 
@@ -17,15 +16,22 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        inputs = [float(request.form[key]) for key in request.form]
+        # Convert form inputs to float
+        inputs = [float(request.form[key]) for key in request.form if request.form[key].strip() != '']
+        
+        if len(inputs) != 10:
+            return render_template("index.html", error="Please fill in all 10 fields correctly.")
+
+        # Preprocess
         scaled = scaler.transform([inputs])
         reshaped = np.expand_dims(scaled, axis=2)
+
+        # Predict class (one-hot style)
         prediction = model.predict(reshaped)
         result = ["Low", "Medium", "High"][np.argmax(prediction)]
+
         return render_template("index.html", prediction=result, user_input=inputs)
     except Exception as e:
-        return f"Error: {e}"
+        return render_template("index.html", error=f"⚠️ Invalid input: {e}")
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host="0.0.0.0", port=port)
+# NOTE: Remove app.run() when deploying to Render (Render uses Gunicorn via Procfile)
