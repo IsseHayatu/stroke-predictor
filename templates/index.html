@@ -56,7 +56,7 @@
         input[type="submit"]:hover {
             background-color: #2f855a;
         }
-        .result {
+        .result, .error {
             margin-top: 30px;
             padding: 15px;
             border-radius: 10px;
@@ -92,41 +92,52 @@
             top: 0;
             transform: translateX(-2px);
         }
+        .error {
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🧠 Stroke Risk Prediction</h1>
+
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
+
         <form action="/predict" method="post">
             <label>Gender:</label>
-            <select name="gender">
+            <select name="gender" required>
                 <option value="0">Male</option>
                 <option value="1">Female</option>
             </select>
 
             <label>Age:</label>
-            <input type="text" name="age">
+            <input type="text" name="age" required>
 
             <label>Hypertension:</label>
-            <select name="hypertension">
+            <select name="hypertension" required>
                 <option value="0">No</option>
                 <option value="1">Yes</option>
             </select>
 
             <label>Heart Disease:</label>
-            <select name="heart_disease">
+            <select name="heart_disease" required>
                 <option value="0">No</option>
                 <option value="1">Yes</option>
             </select>
 
             <label>Ever Married:</label>
-            <select name="ever_married">
+            <select name="ever_married" required>
                 <option value="0">No</option>
                 <option value="1">Yes</option>
             </select>
 
             <label>Work Type:</label>
-            <select name="work_type">
+            <select name="work_type" required>
                 <option value="0">Govt Job</option>
                 <option value="1">Private</option>
                 <option value="2">Self-employed</option>
@@ -135,19 +146,19 @@
             </select>
 
             <label>Residence Type:</label>
-            <select name="residence_type">
+            <select name="residence_type" required>
                 <option value="0">Rural</option>
                 <option value="1">Urban</option>
             </select>
 
             <label>Average Glucose Level:</label>
-            <input type="text" name="avg_glucose_level">
+            <input type="text" name="avg_glucose_level" required>
 
             <label>BMI:</label>
-            <input type="text" name="bmi">
+            <input type="text" name="bmi" required>
 
             <label>Smoking Status:</label>
-            <select name="smoking_status">
+            <select name="smoking_status" required>
                 <option value="0">Never Smoked</option>
                 <option value="1">Formerly Smoked</option>
                 <option value="2">Smokes</option>
