@@ -22,32 +22,32 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
+        print("🌐 Starting prediction route")
         input_values = []
-        print("📥 Form Keys:", request.form.keys())
         for key in request.form:
             value = request.form[key]
-            print(f"🔍 {key}: '{value}'")
+            print(f"🔍 Received {key}: '{value}'")
             if value.strip() == "":
-                raise ValueError(f"Missing value for '{key}'")
+                raise ValueError(f"Missing value for {key}")
             input_values.append(float(value))
 
-        print("✅ Inputs:", input_values)
-
+        print("📊 Raw input:", input_values)
         scaled = scaler.transform([input_values])
-        print("✅ Scaled:", scaled)
+        print("✅ Scaled input:", scaled)
 
-        reshaped = np.expand_dims(scaled, axis=2)
-        print("📐 Reshaped:", reshaped.shape)
+        reshaped = np.expand_dims(scaled, axis=2)  # Makes shape (1, 10, 1)
+        print("📐 Reshaped input:", reshaped.shape)
 
         prediction = model.predict(reshaped)
-        print("✅ Raw prediction:", prediction)
+        print("✅ Prediction output:", prediction)
 
         result = ["Low", "Medium", "High"][np.argmax(prediction)]
+        print("🎯 Predicted class:", result)
 
         return render_template("index.html", prediction=result, user_input=input_values)
 
     except Exception as e:
         import traceback
-        print("❌ Crash:", e)
+        print("❌ Exception during prediction:", e)
         traceback.print_exc()
         return f"⚠️ Server Error: {e}"
