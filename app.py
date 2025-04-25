@@ -1,49 +1,68 @@
 from flask import Flask, render_template, request
-from tensorflow.keras.models import load_model
 import numpy as np
+import pandas as pd
 import pickle
-import os
+from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
 
-# Load model and scaler
-print("📦 Loading model...")
-model = load_model("stroke_model.h5")
-print("✅ Model loaded.")
-print("📐 Model input shape:", model.input_shape)
+# Load model and tools
+model = load_model('stroke_model.h5')
+scaler = pickle.load(open('scaler.pkl', 'rb'))
+encoders = pickle.load(open('label_encoders.pkl', 'rb'))  # Only if you're using label encoders
 
-print("📦 Loading scaler...")
-scaler = pickle.load(open("scaler.pkl", "rb"))
-print("✅ Scaler loaded.")
+RISK_LABELS = ['Low', 'Medium', 'High']
 
-@app.route("/")
+@app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template('form.html')
 
-@app.route("/predict", methods=["POST"])
+@app.route('/predict', methods=['POST'])
 def predict():
     try:
-        input_values = []
-        for key in request.form:
-            value = request.form[key]
-            if value.strip() == "":
-                raise ValueError(f"Missing value for {key}")
-            input_values.append(float(value))
+        # Get values from form
+        gender = request.form['gender']
+        age = float(request.form['age'])
+        hypertension = int(request.form['hypertension'])
+        heart_disease = int(request.form['heart_disease'])
+        ever_married = request.form['ever_married']
+        work_type = request.form['work_type']
+        Residence_type = request.form['Residence_type']
+        avg_glucose_level = float(request.form['avg_glucose_level'])
+        bmi = float(request.form['bmi'])
+        smoking_status = request.form['smoking_status']
 
-        input_array = np.array([input_values])
-        scaled = scaler.transform(input_array)
-        reshaped = np.expand_dims(scaled, axis=2)
+        # Encode categorical fields
+        input_data = {
+            'gender': gender,
+            'age': age,
+            'hypertension': hypertension,
+            'heart_disease': heart_disease,
+            'ever_married': ever_married,
+            'work_type': work_type,
+            'Residence_type': Residence_type,
+            'avg_glucose_level': avg_glucose_level,
+            'bmi': bmi,
+            'smoking_status': smoking_status
+        }
 
-        prediction = model.predict(reshaped)
-        result = ["Low", "Medium", "High"][np.argmax(prediction)]
+        df = pd.DataFrame([input_data])
 
-        return render_template("index.html", prediction=result, user_input=input_values)
+        # Apply label encoders if used
+        for col in encoders:
+            df[col] = encoders[col].transform(df[col])
 
+        # Scale input
+        scaled = scaler.transform(df)
+
+        # Predict
+        prediction = model.predict(scaled)
+        predicted_class = np.argmax(prediction, axis=1)[0]
+        result = RISK_LABELS[predicted_class]
+
+        return render_template('result.html', prediction=result)
     except Exception as e:
-        print("❌ Crash:", e)
-        return f"⚠️ Server Error: {e}"
+        return f"❌ Error occurred: {str(e)}"
 
-# This MUST be present for Render to detect port
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(debug=False, host="0.0.0.0", port=port)
+if __name__ == '__main__':
+    app.run()
