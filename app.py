@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 
-# Load the model and scaler
+# Load model and scaler
 print("📦 Loading model...")
 model = load_model("stroke_model.h5")
 print("✅ Model loaded.")
@@ -43,6 +43,7 @@ def predict():
         print("❌ Crash:", e)
         return f"⚠️ Server Error: {e}"
 
+# This MUST be present for Render to detect port
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(debug=False, host="0.0.0.0", port=port)
