@@ -28,16 +28,15 @@ def predict():
         input_values = []
         for key in request.form:
             value = request.form[key]
+            print(f"🔍 {key}: '{value}'")
             if value.strip() == "":
                 raise ValueError(f"Missing value for {key}")
             input_values.append(float(value))
 
         print("📊 Raw input values:", input_values)
         scaled = scaler.transform([input_values])
-        print("✅ Scaled input:", scaled)
-
-        reshaped = np.expand_dims(scaled, axis=2)
-        print("📐 Reshaped input:", reshaped.shape)
+        reshaped = scaled  # ✅ No reshape needed
+        print("📐 Input to model:", reshaped.shape)
 
         start = time.time()
         prediction = model.predict(reshaped)
