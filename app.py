@@ -23,24 +23,31 @@ def home():
 def predict():
     try:
         input_values = []
+        print("📥 Form Keys:", request.form.keys())
         for key in request.form:
             value = request.form[key]
+            print(f"🔍 {key}: '{value}'")
             if value.strip() == "":
-                raise ValueError(f"Missing value for {key}")
+                raise ValueError(f"Missing value for '{key}'")
             input_values.append(float(value))
 
-        # Scale input
-        scaled = scaler.transform([input_values])
-        reshaped = np.expand_dims(scaled, axis=2)
+        print("✅ Inputs:", input_values)
 
-        # Predict
+        scaled = scaler.transform([input_values])
+        print("✅ Scaled:", scaled)
+
+        reshaped = np.expand_dims(scaled, axis=2)
+        print("📐 Reshaped:", reshaped.shape)
+
         prediction = model.predict(reshaped)
+        print("✅ Raw prediction:", prediction)
+
         result = ["Low", "Medium", "High"][np.argmax(prediction)]
 
         return render_template("index.html", prediction=result, user_input=input_values)
 
     except Exception as e:
+        import traceback
         print("❌ Crash:", e)
+        traceback.print_exc()
         return f"⚠️ Server Error: {e}"
-
-# Render uses gunicorn, no need for app.run()
