@@ -1,191 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Stroke Risk Predictor</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e6ffe6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0 15px;
-        }
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 550px;
-        }
-        h1 {
-            text-align: center;
-            color: #2f855a;
-            margin-bottom: 30px;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        input[type="text"], select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-        }
-        input[type="submit"] {
-            margin-top: 25px;
-            padding: 12px;
-            width: 100%;
-            background-color: #38a169;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        input[type="submit"]:hover {
-            background-color: #2f855a;
-        }
-        .result, .error {
-            margin-top: 30px;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 18px;
-        }
-        .low-risk {
-            background-color: #ecfdf5;
-        }
-        .medium-risk {
-            background-color: #fffbea;
-        }
-        .high-risk {
-            background-color: #fef2f2;
-        }
-        .recommendation {
-            margin-top: 10px;
-            font-size: 14px;
-        }
-        .risk-bar {
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(to right, #16a34a 33%, #facc15 33% 66%, #dc2626 66%);
-            margin-top: 15px;
-            border-radius: 10px;
-            position: relative;
-        }
-        .risk-indicator {
-            height: 20px;
-            width: 4px;
-            background-color: black;
-            position: absolute;
-            top: 0;
-            transform: translateX(-2px);
-        }
-        .error {
-            background-color: #fef2f2;
-            color: #b91c1c;
-        }
-    </style>
+    <title>Stroke Prediction Form</title>
 </head>
 <body>
-    <div class="container">
-        <h1>🧠 Stroke Risk Prediction</h1>
-
-        {% if error %}
-        <div class="error">
-            {{ error }}
-        </div>
-        {% endif %}
-
-        <form action="/predict" method="post">
-            <label>Gender:</label>
-            <select name="gender" required>
-                <option value="0">Male</option>
-                <option value="1">Female</option>
-            </select>
-
-            <label>Age:</label>
-            <input type="text" name="age" required>
-
-            <label>Hypertension:</label>
-            <select name="hypertension" required>
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-
-            <label>Heart Disease:</label>
-            <select name="heart_disease" required>
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-
-            <label>Ever Married:</label>
-            <select name="ever_married" required>
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-
-            <label>Work Type:</label>
-            <select name="work_type" required>
-                <option value="0">Govt Job</option>
-                <option value="1">Private</option>
-                <option value="2">Self-employed</option>
-                <option value="3">Children</option>
-                <option value="4">Never worked</option>
-            </select>
-
-            <label>Residence Type:</label>
-            <select name="residence_type" required>
-                <option value="0">Rural</option>
-                <option value="1">Urban</option>
-            </select>
-
-            <label>Average Glucose Level:</label>
-            <input type="text" name="avg_glucose_level" required>
-
-            <label>BMI:</label>
-            <input type="text" name="bmi" required>
-
-            <label>Smoking Status:</label>
-            <select name="smoking_status" required>
-                <option value="0">Never Smoked</option>
-                <option value="1">Formerly Smoked</option>
-                <option value="2">Smokes</option>
-            </select>
-
-            <input type="submit" value="🧾 Predict">
-        </form>
-
-        {% if prediction %}
-        <div class="result {% if prediction == 'High' %}high-risk{% elif prediction == 'Medium' %}medium-risk{% else %}low-risk{% endif %}">
-            {% if prediction == 'High' %}
-                <h2 style="color: #b91c1c;">🚨 Prediction: High Risk</h2>
-                <div class="recommendation">⚠️ Please consult a healthcare professional immediately.</div>
-                <div class="risk-bar"><div class="risk-indicator" style="left: 90%;"></div></div>
-            {% elif prediction == 'Medium' %}
-                <h2 style="color: #d97706;">⚠️ Prediction: Medium Risk</h2>
-                <div class="recommendation">🔍 Regular checkups are recommended. Maintain a healthy lifestyle.</div>
-                <div class="risk-bar"><div class="risk-indicator" style="left: 50%;"></div></div>
-            {% elif prediction == 'Low' %}
-                <h2 style="color: #15803d;">✅ Prediction: Low Risk</h2>
-                <div class="recommendation">💪 Keep up the good health habits!</div>
-                <div class="risk-bar"><div class="risk-indicator" style="left: 10%;"></div></div>
-            {% else %}
-                <h2>Prediction: {{ prediction }}</h2>
-            {% endif %}
-        </div>
-        {% endif %}
-    </div>
+    <h2>Enter Patient Data</h2>
+    <form action="/predict" method="post">
+        Gender: <input type="text" name="gender"><br>
+        Age: <input type="number" name="age"><br>
+        Hypertension (0 or 1): <input type="number" name="hypertension"><br>
+        Heart Disease (0 or 1): <input type="number" name="heart_disease"><br>
+        Ever Married: <input type="text" name="ever_married"><br>
+        Work Type: <input type="text" name="work_type"><br>
+        Residence Type: <input type="text" name="Residence_type"><br>
+        Avg Glucose Level: <input type="text" name="avg_glucose_level"><br>
+        BMI: <input type="text" name="bmi"><br>
+        Smoking Status: <input type="text" name="smoking_status"><br>
+        <button type="submit">Predict</button>
+    </form>
 </body>
 </html>
