@@ -6,10 +6,11 @@ import os
 
 app = Flask(__name__)
 
+# Load the model and scaler
 print("📦 Loading model...")
 model = load_model("stroke_model.h5")
 print("✅ Model loaded.")
-print(f"📐 Model input shape: {model.input_shape}")
+print("📐 Model input shape:", model.input_shape)
 
 print("📦 Loading scaler...")
 scaler = pickle.load(open("scaler.pkl", "rb"))
@@ -32,9 +33,10 @@ def predict():
         input_array = np.array([input_values])
         scaled = scaler.transform(input_array)
         reshaped = np.expand_dims(scaled, axis=2)
-        prediction = model.predict(reshaped)
 
+        prediction = model.predict(reshaped)
         result = ["Low", "Medium", "High"][np.argmax(prediction)]
+
         return render_template("index.html", prediction=result, user_input=input_values)
 
     except Exception as e:
