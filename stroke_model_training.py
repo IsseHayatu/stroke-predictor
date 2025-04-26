@@ -1,4 +1,4 @@
-# stroke_model_training.py (binary classification + NaN fix, drop 'id')
+# stroke_model_training.py
 
 import pandas as pd
 import numpy as np
@@ -19,7 +19,6 @@ le_work = LabelEncoder()
 le_residence = LabelEncoder()
 le_smoke = LabelEncoder()
 
-# Apply encoding
 df['gender'] = le_gender.fit_transform(df['gender'])
 df['ever_married'] = le_married.fit_transform(df['ever_married'])
 df['work_type'] = le_work.fit_transform(df['work_type'])
@@ -30,11 +29,11 @@ df['smoking_status'] = le_smoke.fit_transform(df['smoking_status'])
 df.replace([np.inf, -np.inf], np.nan, inplace=True)
 df.dropna(inplace=True)
 
-# Step 4: Separate features and label (drop 'id')
+# Step 4: Drop ID column and separate features/labels
 X = df.drop(columns=['id', 'stroke'])
 y = df['stroke']
 
-# Save encoders
+# Save label encoders
 with open('encoders.pkl', 'wb') as f:
     pickle.dump({
         'gender': le_gender,
@@ -44,24 +43,21 @@ with open('encoders.pkl', 'wb') as f:
         'smoking_status': le_smoke
     }, f)
 
-# Step 5: Scale the features
+# Step 5: Scale features
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
 with open('scaler.pkl', 'wb') as f:
     pickle.dump(scaler, f)
 
-# Step 6: Binary classification (label is 0 or 1)
-y_cat = y
+# Step 6: Train/validation split
+X_train, X_val, y_train, y_val = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
-# Step 7: Train/val split (80/20)
-X_train, X_val, y_train, y_val = train_test_split(X_scaled, y_cat, test_size=0.2, random_state=42)
-
-# Step 8: Compute class weights
+# Step 7: Class weight handling
 weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
 class_weights = dict(enumerate(weights))
 
-# Step 9: Build model
+# Step 8: Build the model
 model = Sequential()
 model.add(Dense(64, activation='relu', input_shape=(X_train.shape[1],)))
 model.add(Dense(32, activation='relu'))
@@ -69,10 +65,9 @@ model.add(Dense(1, activation='sigmoid'))
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-# Step 10: Train model
+# Step 9: Train the model
 model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=20, class_weight=class_weights)
 
-# Step 11: Save model
+# Step 10: Save the model
 model.save('stroke_model.h5')
-
 print("✅ Model trained and saved as stroke_model.h5")
