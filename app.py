@@ -6,9 +6,7 @@ import pickle
 
 app = Flask(__name__)
 
-# Load model and scaler
-model = load_model('stroke_model.h5')
-scaler = pickle.load(open('scaler.pkl', 'rb'))
+# Model and scaler will be loaded inside the predict function to prevent startup overload
 
 # Label mapping dictionaries
 gender_map = {"Male": 1, "Female": 0, "Other": 2}
@@ -54,6 +52,8 @@ def ping():
 def predict():
     try:
         print("📥 Received POST /predict")
+        model = load_model('stroke_model.h5')
+        scaler = pickle.load(open('scaler.pkl', 'rb'))
 
         # Extract and safely convert form data
         gender = request.form['gender']
