@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Stroke Prediction Form</title>
-</head>
+<head><title>Stroke Form</title></head>
 <body>
-    <h2>Enter Patient Data</h2>
-    <form action="/predict" method="post">
-        Gender: <input type="text" name="gender"><br>
-        Age: <input type="number" name="age"><br>
-        Hypertension (0 or 1): <input type="number" name="hypertension"><br>
-        Heart Disease (0 or 1): <input type="number" name="heart_disease"><br>
-        Ever Married: <input type="text" name="ever_married"><br>
-        Work Type: <input type="text" name="work_type"><br>
-        Residence Type: <input type="text" name="Residence_type"><br>
-        Avg Glucose Level: <input type="text" name="avg_glucose_level"><br>
-        BMI: <input type="text" name="bmi"><br>
-        Smoking Status: <input type="text" name="smoking_status"><br>
-        <button type="submit">Predict</button>
-    </form>
+  <form method="post" action="/predict">
+    Gender: <input name="gender"><br>
+    Age: <input name="age" type="number"><br>
+    Hypertension: <input name="hypertension"><br>
+    Heart Disease: <input name="heart_disease"><br>
+    Married: <input name="ever_married"><br>
+    Work Type: <input name="work_type"><br>
+    Residence Type: <input name="Residence_type"><br>
+    Avg Glucose: <input name="avg_glucose_level"><br>
+    BMI: <input name="bmi"><br>
+    Smoking Status: <input name="smoking_status"><br>
+    <button type="submit">Predict</button>
+  </form>
 </body>
 </html>

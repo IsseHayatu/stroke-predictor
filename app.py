@@ -1,15 +1,32 @@
 from flask import Flask, render_template, request
 import numpy as np
 import pandas as pd
-import pickle
 from tensorflow.keras.models import load_model
+import pickle
 
 app = Flask(__name__)
 
-# Load model and tools
+# Load model and scaler
 model = load_model('stroke_model.h5')
 scaler = pickle.load(open('scaler.pkl', 'rb'))
-encoders = pickle.load(open('label_encoders.pkl', 'rb'))  # Only if you're using label encoders
+
+# Label mapping dictionaries
+gender_map = {"Male": 1, "Female": 0, "Other": 2}
+married_map = {"Yes": 1, "No": 0}
+residence_map = {"Urban": 1, "Rural": 0}
+work_map = {
+    "Private": 0,
+    "Self-employed": 1,
+    "Govt_job": 2,
+    "children": 3,
+    "Never_worked": 4
+}
+smoking_map = {
+    "formerly smoked": 0,
+    "never smoked": 1,
+    "smokes": 2,
+    "Unknown": 3
+}
 
 RISK_LABELS = ['Low', 'Medium', 'High']
 
@@ -20,7 +37,7 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Get values from form
+        # Extract form data
         gender = request.form['gender']
         age = float(request.form['age'])
         hypertension = int(request.form['hypertension'])
@@ -32,25 +49,19 @@ def predict():
         bmi = float(request.form['bmi'])
         smoking_status = request.form['smoking_status']
 
-        # Encode categorical fields
-        input_data = {
-            'gender': gender,
+        # Create dataframe
+        df = pd.DataFrame([{
+            'gender': gender_map.get(gender, 0),
             'age': age,
             'hypertension': hypertension,
             'heart_disease': heart_disease,
-            'ever_married': ever_married,
-            'work_type': work_type,
-            'Residence_type': Residence_type,
+            'ever_married': married_map.get(ever_married, 0),
+            'work_type': work_map.get(work_type, 0),
+            'Residence_type': residence_map.get(Residence_type, 0),
             'avg_glucose_level': avg_glucose_level,
             'bmi': bmi,
-            'smoking_status': smoking_status
-        }
-
-        df = pd.DataFrame([input_data])
-
-        # Apply label encoders if used
-        for col in encoders:
-            df[col] = encoders[col].transform(df[col])
+            'smoking_status': smoking_map.get(smoking_status, 3)
+        }])
 
         # Scale input
         scaled = scaler.transform(df)
@@ -65,4 +76,4 @@ def predict():
         return f"❌ Error occurred: {str(e)}"
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
