@@ -30,26 +30,43 @@ smoking_map = {
 
 RISK_LABELS = ['Low', 'Medium', 'High']
 
+def safe_int(value, default=0):
+    try:
+        return int(value)
+    except:
+        return default
+
+def safe_float(value, default=0.0):
+    try:
+        return float(value)
+    except:
+        return default
+
 @app.route('/')
 def home():
     return render_template('form.html')
 
+@app.route('/ping')
+def ping():
+    return "✅ App is live!"
+
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Extract form data
+        print("📥 Received POST /predict")
+
+        # Extract and safely convert form data
         gender = request.form['gender']
-        age = float(request.form['age'])
-        hypertension = int(request.form['hypertension'])
-        heart_disease = int(request.form['heart_disease'])
+        age = safe_float(request.form['age'])
+        hypertension = safe_int(request.form['hypertension'])
+        heart_disease = safe_int(request.form['heart_disease'])
         ever_married = request.form['ever_married']
         work_type = request.form['work_type']
         Residence_type = request.form['Residence_type']
-        avg_glucose_level = float(request.form['avg_glucose_level'])
-        bmi = float(request.form['bmi'])
+        avg_glucose_level = safe_float(request.form['avg_glucose_level'])
+        bmi = safe_float(request.form['bmi'])
         smoking_status = request.form['smoking_status']
 
-        # Create dataframe
         df = pd.DataFrame([{
             'gender': gender_map.get(gender, 0),
             'age': age,
@@ -63,16 +80,23 @@ def predict():
             'smoking_status': smoking_map.get(smoking_status, 3)
         }])
 
-        # Scale input
-        scaled = scaler.transform(df)
+        print("🔄 DataFrame created")
+        print(df)
 
-        # Predict
+        scaled = scaler.transform(df)
+        print("📏 Scaled input")
+
         prediction = model.predict(scaled)
+        print("✅ Model predicted:", prediction)
+
         predicted_class = np.argmax(prediction, axis=1)[0]
         result = RISK_LABELS[predicted_class]
 
         return render_template('result.html', prediction=result)
+
     except Exception as e:
+        import traceback
+        print("❌ Error:", traceback.format_exc())
         return f"❌ Error occurred: {str(e)}"
 
 if __name__ == '__main__':
