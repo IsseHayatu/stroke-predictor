@@ -1,4 +1,4 @@
-# stroke_model_training.py (binary classification + NaN fix)
+# stroke_model_training.py (binary classification + NaN fix, drop 'id')
 
 import pandas as pd
 import numpy as np
@@ -30,8 +30,8 @@ df['smoking_status'] = le_smoke.fit_transform(df['smoking_status'])
 df.replace([np.inf, -np.inf], np.nan, inplace=True)
 df.dropna(inplace=True)
 
-# Step 4: Separate features and label
-X = df.drop(columns=['stroke'])
+# Step 4: Separate features and label (drop 'id')
+X = df.drop(columns=['id', 'stroke'])
 y = df['stroke']
 
 # Save encoders
@@ -51,17 +51,17 @@ X_scaled = scaler.fit_transform(X)
 with open('scaler.pkl', 'wb') as f:
     pickle.dump(scaler, f)
 
-# Step 6: Use labels directly (binary classification)
+# Step 6: Binary classification (label is 0 or 1)
 y_cat = y
 
-# Step 7: Train/val split
+# Step 7: Train/val split (80/20)
 X_train, X_val, y_train, y_val = train_test_split(X_scaled, y_cat, test_size=0.2, random_state=42)
 
 # Step 8: Compute class weights
 weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
 class_weights = dict(enumerate(weights))
 
-# Step 9: Build binary classification model
+# Step 9: Build model
 model = Sequential()
 model.add(Dense(64, activation='relu', input_shape=(X_train.shape[1],)))
 model.add(Dense(32, activation='relu'))
@@ -69,10 +69,10 @@ model.add(Dense(1, activation='sigmoid'))
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-# Step 10: Train the model
+# Step 10: Train model
 model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=20, class_weight=class_weights)
 
-# Step 11: Save the model
+# Step 11: Save model
 model.save('stroke_model.h5')
 
 print("✅ Model trained and saved as stroke_model.h5")
