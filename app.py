@@ -35,7 +35,7 @@ def predict():
         avg_glucose_level = float(request.form['avg_glucose_level'])
         bmi = float(request.form['bmi'])
 
-        # Combine all inputs (11 total)
+        # Combine all inputs (10 total, after dropping 'id')
         features = np.array([[
             gender,
             age,
