@@ -87,7 +87,8 @@ def predict():
         print("📏 Scaled input")
 
         prediction = model.predict(scaled)
-        print("✅ Model predicted:", prediction)
+        print(f"✅ Model predicted raw values: {prediction}")
+        print(f"🔢 Predicted class: {predicted_class} → Risk: {result}")
 
         predicted_class = np.argmax(prediction, axis=1)[0]
         result = RISK_LABELS[predicted_class]
