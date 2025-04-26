@@ -11,10 +11,9 @@
         <select name="gender" required>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-            <option value="Other">Other</option>
         </select><br><br>
 
-        Age: <input type="number" name="age" step="0.1" required><br><br>
+        Age: <input type="number" name="age" required><br><br>
 
         Hypertension (0 or 1): <input type="number" name="hypertension" min="0" max="1" required><br><br>
 
@@ -36,7 +35,7 @@
         </select><br><br>
 
         Residence Type:
-        <select name="Residence_type" required>
+        <select name="residence_type" required>
             <option value="Urban">Urban</option>
             <option value="Rural">Rural</option>
         </select><br><br>
@@ -47,13 +46,14 @@
 
         Smoking Status:
         <select name="smoking_status" required>
-            <option value="formerly smoked">formerly smoked</option>
             <option value="never smoked">never smoked</option>
+            <option value="formerly smoked">formerly smoked</option>
             <option value="smokes">smokes</option>
             <option value="Unknown">Unknown</option>
         </select><br><br>
 
         <input type="submit" value="Predict">
+
     </form>
 </body>
 </html>
