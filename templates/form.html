@@ -1,35 +1,59 @@
-Gender:
-<select name="gender" required>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-  <option value="Other">Other</option>
-</select><br>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stroke Risk Prediction</title>
+</head>
+<body>
+    <h2>Enter Patient Data</h2>
+    <form method="POST" action="/predict">
 
-Ever Married:
-<select name="ever_married" required>
-  <option value="Yes">Yes</option>
-  <option value="No">No</option>
-</select><br>
+        Gender:
+        <select name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select><br><br>
 
-Work Type:
-<select name="work_type" required>
-  <option value="Private">Private</option>
-  <option value="Self-employed">Self-employed</option>
-  <option value="Govt_job">Govt_job</option>
-  <option value="children">children</option>
-  <option value="Never_worked">Never_worked</option>
-</select><br>
+        Age: <input type="number" name="age" step="0.1" required><br><br>
 
-Residence Type:
-<select name="Residence_type" required>
-  <option value="Urban">Urban</option>
-  <option value="Rural">Rural</option>
-</select><br>
+        Hypertension (0 or 1): <input type="number" name="hypertension" min="0" max="1" required><br><br>
 
-Smoking Status:
-<select name="smoking_status" required>
-  <option value="formerly smoked">formerly smoked</option>
-  <option value="never smoked">never smoked</option>
-  <option value="smokes">smokes</option>
-  <option value="Unknown">Unknown</option>
-</select><br>
+        Heart Disease (0 or 1): <input type="number" name="heart_disease" min="0" max="1" required><br><br>
+
+        Ever Married:
+        <select name="ever_married" required>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select><br><br>
+
+        Work Type:
+        <select name="work_type" required>
+            <option value="Private">Private</option>
+            <option value="Self-employed">Self-employed</option>
+            <option value="Govt_job">Govt_job</option>
+            <option value="children">children</option>
+            <option value="Never_worked">Never_worked</option>
+        </select><br><br>
+
+        Residence Type:
+        <select name="Residence_type" required>
+            <option value="Urban">Urban</option>
+            <option value="Rural">Rural</option>
+        </select><br><br>
+
+        Avg Glucose Level: <input type="number" name="avg_glucose_level" step="0.1" required><br><br>
+
+        BMI: <input type="number" name="bmi" step="0.1" required><br><br>
+
+        Smoking Status:
+        <select name="smoking_status" required>
+            <option value="formerly smoked">formerly smoked</option>
+            <option value="never smoked">never smoked</option>
+            <option value="smokes">smokes</option>
+            <option value="Unknown">Unknown</option>
+        </select><br><br>
+
+        <input type="submit" value="Predict">
+    </form>
+</body>
+</html>
