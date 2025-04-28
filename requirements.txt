@@ -2,4 +2,6 @@ Flask
 tensorflow
 scikit-learn
 pandas
+gunicorn
+
 
