@@ -24,7 +24,7 @@ def predict():
             float(request.form["heart_disease"]),
             float(request.form["ever_married"]),
             float(request.form["work_type"]),
-            float(request.form["residence_type"]),
+            float(request.form["Residence_type"]),
             float(request.form["avg_glucose_level"]),
             float(request.form["bmi"]),
             float(request.form["smoking_status"]),
