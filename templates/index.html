@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stroke Risk Predictor</title>
+</head>
+<body>
+    <h1>Stroke Risk Prediction</h1>
+    <form action="/predict" method="post">
+        <label>Age:</label><input type="text" name="age"><br>
+        <label>Blood Pressure:</label><input type="text" name="blood_pressure"><br>
+        <label>Cholesterol:</label><input type="text" name="cholesterol"><br>
+        <label>Heart Rate:</label><input type="text" name="heart_rate"><br>
+        <label>Glucose:</label><input type="text" name="glucose"><br>
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if prediction %}
+        <h2>Prediction: {{ prediction }}</h2>
+        <p>Your Inputs: {{ user_input }}</p>
+    {% endif %}
+</body>
+</html>
