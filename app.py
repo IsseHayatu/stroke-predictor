@@ -16,6 +16,7 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
+        # Collecting the input values from the form
         input_values = [
             float(request.form["gender"]),
             float(request.form["age"]),
@@ -29,12 +30,17 @@ def predict():
             float(request.form["smoking_status"]),
         ]
 
+        # Convert the list into a numpy array and scale it
         input_array = np.array([input_values])
-        scaled = scaler.transform(input_array)
+        scaled = scaler.transform(input_array)  # Scaling the data
+
+        # Reshape data for prediction (if required)
         reshaped = np.expand_dims(scaled, axis=2)
 
-        # Predict: single sigmoid output
+        # Make the prediction
         probability = model.predict(reshaped)[0][0]
+        
+        # Classify the result into Low, Medium, or High
         if probability < 0.3:
             result = "Low"
         elif probability <= 0.7:
@@ -42,6 +48,7 @@ def predict():
         else:
             result = "High"
 
+        # Render the template with the prediction result
         return render_template("index.html", prediction=result, user_input=input_values)
 
     except Exception as e:
