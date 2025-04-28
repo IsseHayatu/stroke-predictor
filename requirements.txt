@@ -3,3 +3,5 @@ tensorflow
 scikit-learn
 numpy
 gunicorn
+pandas
+
