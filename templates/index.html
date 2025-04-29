@@ -4,7 +4,7 @@
     <title>Stroke Risk Prediction</title>
 </head>
 <body>
-    <h1>Stroke Risk Predictor</h1>
+    <h1><b>Stroke Risk Predictor</b></h1>
     <form action="/predict" method="POST">
         <label>Gender (0=Female, 1=Male, 2=Other):</label><br>
         <input type="number" name="gender" required><br><br>
@@ -25,7 +25,7 @@
         <input type="number" name="work_type" required><br><br>
 
         <label>Residence Type (0=Rural, 1=Urban):</label><br>
-        <input type="number" name="Residence_type" required><br><br>  <!-- ✅ this must have R Capital! -->
+        <input type="number" name="Residence_type" required><br><br>
 
         <label>Average Glucose Level:</label><br>
         <input type="number" step="0.01" name="avg_glucose_level" required><br><br>
@@ -40,7 +40,7 @@
     </form>
 
     {% if prediction %}
-        <h2>Prediction: {{ prediction }}</h2>
+        <h2 style="color:blue;">{{ prediction }}</h2>
     {% endif %}
 </body>
 </html>

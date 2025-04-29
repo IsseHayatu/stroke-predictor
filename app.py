@@ -7,57 +7,54 @@ from tensorflow.keras.models import load_model
 # Initialize the app
 app = Flask(__name__)
 
-# Load the trained CNN model and scaler once at startup
+# Load model and scaler
 model = load_model('stroke_model.h5')
 scaler = pickle.load(open('scaler.pkl', 'rb'))
 
-# Home route - render the form
+# Home route
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Predict route - handle form submission
+# Predict route
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Get form data
+        # Collect inputs
         gender = int(request.form['gender'])
         age = float(request.form['age'])
         hypertension = int(request.form['hypertension'])
         heart_disease = int(request.form['heart_disease'])
         ever_married = int(request.form['ever_married'])
         work_type = int(request.form['work_type'])
-        Residence_type = int(request.form['Residence_type'])  # ✅ exactly match name from HTML
+        Residence_type = int(request.form['Residence_type'])  # NOTE: keep capital R here
         avg_glucose_level = float(request.form['avg_glucose_level'])
         bmi = float(request.form['bmi'])
         smoking_status = int(request.form['smoking_status'])
 
-        # Make input array as a DataFrame (with correct column names)
-        input_data = pd.DataFrame([[gender, age, hypertension, heart_disease, ever_married,
-                                work_type, Residence_type, avg_glucose_level, bmi, smoking_status]],
-                                columns=['gender', 'age', 'hypertension', 'heart_disease', 'ever_married',
-                                         'work_type', 'Residence_type', 'avg_glucose_level', 'bmi', 'smoking_status'])  # ✅ must match scaler
+        # Input order must match scaler training order
+        input_data = pd.DataFrame([[
+            gender, age, hypertension, heart_disease, ever_married,
+            work_type, Residence_type, avg_glucose_level, bmi, smoking_status
+        ]], columns=[
+            'gender', 'age', 'hypertension', 'heart_disease', 'ever_married',
+            'work_type', 'Residence_type', 'avg_glucose_level', 'bmi', 'smoking_status'
+        ])
 
-        # Scale input
+        # Scale input and reshape
         input_scaled = scaler.transform(input_data)
-
-        # Reshape for CNN model input
-        reshaped = input_scaled.reshape((input_scaled.shape[0], input_scaled.shape[1], 1))
+        reshaped = input_scaled.reshape((1, 10, 1))
 
         # Predict
         prediction = model.predict(reshaped, batch_size=1)
-
-        # Get the risk class
         risk = np.argmax(prediction, axis=1)[0]
-
-        # Map risk class to label
         risk_label = {0: 'Low Risk', 1: 'Medium Risk', 2: 'High Risk'}
 
         return render_template('index.html', prediction=f'Stroke Risk: {risk_label[risk]}')
 
     except Exception as e:
-        return f"An error occurred during prediction: {str(e)}"
+        return render_template('index.html', prediction=f"An error occurred during prediction: {str(e)}")
 
-# Run the app (for local testing only)
+# Run app
 if __name__ == "__main__":
     app.run(debug=True)
