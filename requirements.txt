@@ -1,7 +1,8 @@
 Flask
+numpy
+pandas
 tensorflow
 scikit-learn
-pandas
 gunicorn
 
 
