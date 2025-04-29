@@ -24,8 +24,8 @@
         <label>Work Type (0-4):</label><br>
         <input type="number" name="work_type" required><br><br>
 
-        <label>residence Type (0=Rural, 1=Urban):</label><br>
-        <input type="number" name="residence_type" required><br><br>
+        <label>Residence Type (0=Rural, 1=Urban):</label><br>
+        <input type="number" name="Residence_type" required><br><br>  <!-- ✅ this must have R Capital! -->
 
         <label>Average Glucose Level:</label><br>
         <input type="number" step="0.01" name="avg_glucose_level" required><br><br>
@@ -40,7 +40,7 @@
     </form>
 
     {% if prediction %}
-        <h2>{{ prediction }}</h2>
+        <h2>Prediction: {{ prediction }}</h2>
     {% endif %}
 </body>
 </html>

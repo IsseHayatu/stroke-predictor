@@ -11,7 +11,7 @@ df = pd.read_csv("stroke_data.csv")
 df = df.drop(columns=["id"])
 
 # Encode categorical columns
-categorical_cols = ["gender", "ever_married", "work_type", "residence_type", "smoking_status"]
+categorical_cols = ["gender", "ever_married", "work_type", "Residence_type", "smoking_status"]
 
 label_encoders = {}
 for col in categorical_cols:
